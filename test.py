@@ -10,5 +10,17 @@ def test_lexer():
 
         if not token:
             break
-        print({token})
+        print(token)
+ 
+def test_lexer_linear():
+    path = abspath("./test/tslang.grud")
+    lex = LexerGrud(path)
+
+    while True:
+        if lex.eof():
+            break
+
+        tokl = lex.nextlinear()
+
+        print(tokl)
  
