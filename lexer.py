@@ -31,7 +31,7 @@ class Lexer:
         return self.nextch()
     
     def eof(self):
-        return self.follow() == None
+        return self.follow() == ''
 
     def endl(self,c):
         return c == '\n'
@@ -62,6 +62,24 @@ class Lexer:
         return t
 
 class LexerGrud(Lexer):
+    def nextlinear(self):
+        line = list()
+        while True:
+            t = self.next()
+            
+            if self.none(t):
+                break
+
+            if self.endl(t):
+                if len(line) == 0 :
+                    continue
+                else:
+                    break
+            
+            line.append(t)
+        
+        return line
+
     def next(self):
         c = self.nextch()
         
