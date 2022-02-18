@@ -1,7 +1,6 @@
 
 class Lexer:
     def __init__(self,path) -> None:
-        self.__init__()
         self.file = open(path,"r")
         self.currow = 0
         self.curcol = 0
@@ -49,7 +48,7 @@ class Lexer:
     
     def tokseek(self,t:str):
         if t != '':
-            t = t[:-1]
+            # t = t[:-1]
             self.seekprev()
         
         return t
@@ -65,13 +64,14 @@ class Lexer:
 class LexerGrud(Lexer):
     def next(self):
         c = self.nextch()
-
-        if c == '' or c == '\n':
+        
+        if c == '' or self.endl(c):
             return c
 
+        self.seekprev()
         self.skipwspace()
+
         tok = self.block()
-        
         return tok
     
     def skipwspace(self):
@@ -79,6 +79,7 @@ class LexerGrud(Lexer):
         
         while c.isspace():
             if self.endl(c):
+                self.seekprev()
                 break
             c = self.nextch()
 
@@ -87,12 +88,13 @@ class LexerGrud(Lexer):
     def block(self):
         c = self.nextch()
         t = ''
-        while c.isspace():
-            if self.endl(c) or self.none(c):
+        while not c.isspace():
+            if self.none(c) or self.endl(c):
                 break
             t += c
             c = self.nextch()
         
-        t = self.tokseek(t)
+        if self.endl(c):
+            self.seekprev()
 
         return t
