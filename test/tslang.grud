@@ -1,0 +1,92 @@
+%Lexer%
+IGNORE:wspace   r'/^(\n|\t|\s|\f|\r)$/ 
+IGNORE:comment  r'/^[^\n]*\n$/
+EOF             r'\0  #comment
+IDEN            r'/^[a-zA-Z_][a-zA-Z_0-9]*$/
+NUMBER          r'/^[0-9]+$/
+FC              w'fc
+LOGICAL         and or
+OPRATOR         * / % + -
+COMPARISON      <= == >= > <
+UNARY           not + - 
+TYPE            numeric array none
+
+%Priority%
+OPRATOR * / % #priority 0
+OPRATOR + -   #priority 1
+
+%Grammar%
+PROC
+PROC            FUNCTION PROC
+
+FUNCTION        FC IDEN ( FLIST )  -> TYPE { BODY }
+
+BODY 
+BODY            STMT BODY 
+
+DEFVAR:declare  IDEN : TYPE
+DEFVAR:init     IDEN : TYPE = EXPR
+
+STMT:expr       EXPR ; 
+STMT:var        DEFVAR ; 
+STMT:if         if EXPR : STMT
+STMT:ifnot      if EXPR : STMT ifnot : STMT
+STMT:loop       loop EXPR : STMT
+STMT:for        for IDEN <- EXPR : STMT
+STMT:ret        return EXPR ;
+STMT:body       { BODY }
+
+FLIST
+FLIST           IDEN : IDEN
+FLIST           IDEN : IDEN , FLIST 
+
+CLIST 
+CLIST           EXPR
+CLIST           EXPR , CLIST 
+
+EXPR:cell       EXPR  [ EXPR ] 
+EXPR:ninja      EXPR ? EXPR : EXPR
+EXPR:calc       EXPR OPRATOR EXPR
+EXPR:comp       EXPR COMPARISON EXPR
+EXPR:logic      LOGICAL EXPR
+EXPR:unary      UNARY EXPR
+EXPR:iden       IDEN
+EXPR:ass        IDEN = EXPR
+EXPR:call       IDEN ( CLIST )
+EXPR:number     NUMBER
+
+%AST%
+PROC:1          FUNCTION ^PROC
+
+FUNCTION        IDEN FLIST TYPE BODY
+
+BODY:1          STMT ^BODY 
+
+DEFVAR:declare  IDEN TYPE
+DEFVAR:init     IDEN TYPE EXPR
+
+FLIST:1         IDEN IDEN
+FLIST:2         IDEN IDEN ^FLIST 
+
+CLIST:0         EXPR
+CLIST:1         EXPR ^CLIST 
+
+STMT:expr       EXPR 
+STMT:var        DEFVAR 
+STMT:if         EXPR STMT
+STMT:ifnot      EXPR STMT STMT
+STMT:loop       EXPR STMT
+STMT:for        IDEN EXPR STMT
+STMT:ret        EXPR
+STMT:body       BODY
+
+EXPR:cell       EXPR EXPR
+EXPR:ninja      EXPR EXPR EXPR
+EXPR:calc       EXPR OPRATOR EXPR
+EXPR:comp       EXPR COMPARISON EXPR
+EXPR:logic      LOGICAL EXPR
+EXPR:unary      UNARY EXPR
+EXPR:iden       IDEN
+EXPR:ass        IDEN EXPR
+EXPR:call       IDEN ^CLIST
+EXPR:number     NUMBER
