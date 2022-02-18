@@ -1,0 +1,25 @@
+:: Lexical ::
+alphanum := /^[a-zA-Z_0-9]+$/
+
+block := /^[^wspace]*{1,}$/
+
+comment := #[^\n]*\n
+
+endl := \n
+:: Parser ::
+grud := |
+        stmt grud
+
+stmt := %block% endl    | 
+        dict tlist endl  
+
+tlist :=             |
+         token       |
+         token blist
+
+token := block      |
+         w'block    |
+         r'block
+
+dict := alphanum |
+        alphanum:dict
