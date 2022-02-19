@@ -13,6 +13,9 @@ class AST:
     
     def setparent(self,parent):
         self.parent = parent
+    
+    def addchild(self,child):
+        self.children.append(child)
 
 class ASTKeyPair( AST ):
     def __init__(self,key) -> None:
