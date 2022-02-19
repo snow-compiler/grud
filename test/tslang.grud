@@ -2,14 +2,14 @@
 IGNORE:wspace   r'/^(\n|\t|\s|\f|\r)$/ 
 IGNORE:comment  r'/^[^\n]*\n$/
 EOF             r'\0  #comment
-IDEN            r'/^[a-zA-Z_][a-zA-Z_0-9]*$/
-NUMBER          r'/^[0-9]+$/
-FC              w'fc
-LOGICAL         and or
 OPRATOR         * / % + -
 COMPARISON      <= == >= > <
 UNARY           not + - 
+FC              w'fc
+LOGICAL         and or
 TYPE            numeric array none
+NUMBER          r'/^[0-9]+$/
+IDEN            r'/^[a-zA-Z_][a-zA-Z_0-9]*$/
 
 %Priority%
 OPRATOR * / % #priority 0
@@ -19,8 +19,9 @@ OPRATOR + -   #priority 1
 PROC
 PROC            FUNCTION PROC
 
-FUNCTION:single FC IDEN ( FLIST )  -> TYPE : EXPR
-FUNCTION:body   FC IDEN ( FLIST )  -> TYPE : { BODY }
+FUNCTION        FC IDEN ( FLIST )  -> TYPE :
+FUNCTION:single FUNCTION:0 EXPR
+FUNCTION:body   FUNCTION:0 { BODY }
 
 BODY 
 BODY            STMT BODY 
@@ -60,8 +61,9 @@ EXPR:number     NUMBER
 %AST%
 PROC:1          FUNCTION ^PROC
 
-FUNCTION:single FC IDEN  FLIST TYPE EXPR
-FUNCTION:body   FC IDEN  FLIST TYPE BODY
+FUNCTION:0      IDEN FLIST TYPE
+FUNCTION:single ^FUNCTION:0 EXPR
+FUNCTION:body   ^FUNCTION:0 BODY
 
 BODY:1          STMT ^BODY 
 
