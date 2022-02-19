@@ -1,3 +1,4 @@
+from typing import Any
 import uuid
 
 class AST:
@@ -15,6 +16,12 @@ class AST:
     
     def addchild(self,child):
         self.children.append(child)
+
+    def setval(self,key:str,val:Any):
+        self.value[key] = val
+    
+    def getval(self,key:str):
+        return self.value.get(key)
 
 class ASTKeyPair( AST ):
     def __init__(self,key:str) -> None:
