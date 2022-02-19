@@ -1,7 +1,7 @@
 from posixpath import abspath
-from lexer import LexerGrud
+from glexer import LexerGrud
 from gtree import GrudTree
-from lexer import LexerGrud
+from glexer import LexerGrud
 from gparser import ParserGrud
 
 

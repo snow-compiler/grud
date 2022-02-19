@@ -1,6 +1,6 @@
 from typing import List
 from gtree import GrudTree
-from lexer import Lexer, LexerGrud
+from glexer import Lexer, LexerGrud
 from error import ErrorHandler
 import gast as AST
 class Parser:
