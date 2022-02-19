@@ -32,13 +32,13 @@ STMT:var        DEFVAR ;
 STMT:if         if EXPR : STMT
 STMT:ifnot      if EXPR : STMT ifnot : STMT
 STMT:loop       loop EXPR : STMT
-STMT:for        for IDEN <- EXPR : STMT
+STMT:for        for IDEN , IDEN <- EXPR : STMT
 STMT:ret        return EXPR ;
 STMT:body       { BODY }
 
 FLIST
-FLIST           IDEN : IDEN
-FLIST           IDEN : IDEN , FLIST 
+FLIST           IDEN : TYPE
+FLIST           IDEN : TYPE , FLIST 
 
 CLIST 
 CLIST           EXPR
