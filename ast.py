@@ -1,3 +1,6 @@
+import uuid
+
+
 class AST:
     def __init__(self,id) -> None:
         self.parent = None
@@ -10,3 +13,8 @@ class AST:
     
     def setparent(self,parent):
         self.parent = parent
+
+class ASTKeyPair( AST ):
+    def __init__(self,key) -> None:
+        super().__init__(uuid.uuid4())
+        self.key = key
