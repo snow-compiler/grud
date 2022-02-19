@@ -1,7 +1,8 @@
 proc := |
     func proc
 
-func := fc iden ( flist ) -> type { body }
+func := fc iden ( flist ) -> type : expr |
+        fc iden ( flist ) -> type : { body } 
 
 body := |
     stmt body

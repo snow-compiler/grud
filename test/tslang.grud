@@ -19,7 +19,8 @@ OPRATOR + -   #priority 1
 PROC
 PROC            FUNCTION PROC
 
-FUNCTION        FC IDEN ( FLIST )  -> TYPE { BODY }
+FUNCTION:single FC IDEN ( FLIST )  -> TYPE : EXPR
+FUNCTION:body   FC IDEN ( FLIST )  -> TYPE : { BODY }
 
 BODY 
 BODY            STMT BODY 
