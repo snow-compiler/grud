@@ -4,8 +4,7 @@ IGNORE:comment  r'/^[^\n]*\n$/
 EOF             r'\0  #comment
 OPRATOR         * / % + -
 COMPARISON      <= == >= > <
-UNARY           not + - 
-FC              w'fc
+UNARY           w'not + -
 LOGICAL         and or
 TYPE            numeric array none
 NUMBER          r'/^[0-9]+$/
@@ -19,7 +18,7 @@ OPRATOR + -   #priority 1
 PROC
 PROC            FUNCTION PROC
 
-FUNCTION        FC IDEN ( FLIST )  -> TYPE :
+FUNCTION        fc IDEN ( FLIST )  -> TYPE :
 FUNCTION:single FUNCTION:0 EXPR
 FUNCTION:body   FUNCTION:0 { BODY }
 
