@@ -1,0 +1,19 @@
+#find index array if cell compair to num 
+fc findindex( a : array , num : numeric ) -> numeric :
+{
+    for a , i <- A :
+    {
+        if a == num :
+            return i
+    }
+
+    return -1;
+}
+
+fc main ( argc : num, argv : array ) -> numeric :
+{
+
+    
+
+    return 0; 
+}
