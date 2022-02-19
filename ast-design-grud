@@ -1,0 +1,32 @@
+a       s a b
+a:1     c c c
+a       b b b
+a:b:c   labmda
+
+[
+    {
+        key : "a"
+        children:[
+            "s a b",
+            {
+                key : "1"
+                children:[
+                    "c c c"
+                ]
+            },
+            "b b b",
+            {
+                key : "b"
+                children:[
+                    {
+                        key : "c"
+                        children:[
+                            "labmda"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
+]
