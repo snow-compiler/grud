@@ -1,5 +1,4 @@
 
-import json
 from posixpath import abspath
 from gast import ASTKeyPair, ASTVaulePair
 from gtree import GrudTree
@@ -13,5 +12,4 @@ gtree = parser.parse()
 
 for key in gtree:
     g3 : GrudTree = gtree[key]
-    print("[:: %s ::]" % key)
-    GrudTree.print(g3.tbl)
+    GrudTree.print(g3.tbl,key)
