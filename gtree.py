@@ -93,7 +93,10 @@ class GrudTree:
 
         return parent
 
-    def print(tbl : list):
-        root = GrudTree.anytree(tbl)
+    def print(tbl : list,title=None):
+        if title: 
+            title = Node(title) 
+
+        root = GrudTree.anytree(tbl,title)
         for pre, fill, node in RenderTree(root):
              print("%s%s" % (pre, node.name))
