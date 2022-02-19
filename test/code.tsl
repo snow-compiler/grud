@@ -12,8 +12,10 @@ fc findindex( a : array , num : numeric ) -> numeric :
 
 fc main ( argc : num, argv : array ) -> numeric :
 {
-
+    A : array = [0,5,8,7,9,4]
     
+    num = input();
+    print(findindex(A,num));
 
     return 0; 
 }
