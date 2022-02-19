@@ -25,9 +25,10 @@ class GrudTree:
 
         tbl = node.children
 
-        ret = self.initorget( tbl, keys[1:] , keyall )
-        
+        ret : AST.AST = self.initorget( tbl, keys[1:] , keyall )
+
         if ret:
+            ret.setparent( node )
             return ret
         
         return node
@@ -42,6 +43,7 @@ class GrudTree:
         
         if node:
             val = AST.ASTVaulePair( value )
+            val.setparent( node )
             node.children.append( val )
             return True
         
