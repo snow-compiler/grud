@@ -53,6 +53,22 @@ class Lexer:
         
         return t
 
+    def escapeater(self,token:str):
+        c = 0
+        size = len(token)
+        eattok = '' 
+        while c < size:   
+            eattok += token[c]
+            
+            if token[c] == '\\':
+                c +=1
+            
+            c += 1
+
+        print(eattok)
+
+        return eattok
+
     def next(self):
         pass
     def follow(self):
@@ -60,7 +76,7 @@ class Lexer:
         t = self.next()
         self.file.seek(saved,0)
         return t
-
+    
 class LexerGrud(Lexer):
     def nextlinear(self):
         line = list()
@@ -90,8 +106,10 @@ class LexerGrud(Lexer):
         self.skipwspace()
 
         tok = self.block()
+
+        # return self.escapeater(tok)
         return tok
-    
+
     def skipwspace(self):
         c = self.nextch()
         
