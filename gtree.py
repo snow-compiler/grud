@@ -5,28 +5,27 @@ class GrudTree:
     def __init__(self) -> None:
         self.tbl = list()
 
-    def initorget( self, tbl : list, keys : list ):
+    def initorget( self, tbl : list, keys : list , keyall  : str = "" ):
         node = None
 
         if len( keys ) == 0:
             return None
 
         k = str ( keys[ 0 ] )
-       
         for i in range( 0, len(tbl) ):
             gnd = tbl[ i ]
             if isinstance( gnd, AST.ASTKeyPair ):
                 if gnd.key == k:
                     node = gnd
                     break
-        
+    
         if not node:
             node = AST.ASTKeyPair( k )
             tbl.append( node )
 
         tbl = node.children
 
-        ret = self.initorget( tbl, keys[1:] )
+        ret = self.initorget( tbl, keys[1:] , keyall )
         
         if ret:
             return ret
@@ -39,7 +38,7 @@ class GrudTree:
             print( "error : key is empty." )
             return False
 
-        node = self.initorget( self.tbl, keys )
+        node = self.initorget( self.tbl, keys, key)
         
         if node:
             val = AST.ASTVaulePair( value )
@@ -58,11 +57,6 @@ class GrudTree:
         tbl = self.tbl
 
         for k in keys:
-            if k.isnumeric():
-                index  = int( k )
-                if index < len( tbl ) - 1:
-                    node = tbl[ k ]
-                    continue
             i = 0
             while True:
 
