@@ -30,3 +30,15 @@ a:b:c   labmda
     }
 
 ]
+
+AST {
+    key :"root name"
+    children:[
+        ASTValue(val),
+        ASTKeyPair(key,children),
+        ASTValue(val),
+        ASTKeyPair(key,children),
+        ASTKeyPair(key,children),
+        ASTKeyPair(key,children),
+    ]
+}
