@@ -1,9 +1,8 @@
-from typing import List
 import gast as AST 
 
 class GrudTree:
     def __init__(self) -> None:
-        self.tbl : List[AST.AST] = list()
+        self.tbl = list()
 
     def initorget( self, tbl : list, keys : list ):
         node = None
@@ -78,5 +77,15 @@ class GrudTree:
                         
         return node
 
-    def iskeyast( node:AST.ASTKeyPair, key:str ):
+    def iskeyast( node : AST.ASTKeyPair, key:str ):
         return isinstance( node, AST.ASTKeyPair ) and node.key == key
+
+    def print(tbl : list,level = 0):
+        wpace = "\t" * level 
+        for node in tbl:
+            if isinstance( node, AST.ASTKeyPair ):
+                print("%s%s"%(wpace,node.key))
+                GrudTree.print(node.children,level+1)
+                pass
+            if isinstance( node, AST.ASTVaulePair ):
+                print("%s%s"%(wpace,node.value))
