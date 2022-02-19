@@ -22,6 +22,7 @@ defvar := iden : type |
 
 epxr := |
     expr[ expr ]        | 
+    [ clist ]           | 
     expr ? expr : expr  |
     expr + expr         |
     expr - expr         |

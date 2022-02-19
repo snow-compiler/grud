@@ -46,6 +46,7 @@ CLIST           EXPR
 CLIST           EXPR , CLIST 
 
 EXPR:cell       EXPR  [ EXPR ] 
+EXPR:arr        [ EXPR ] 
 EXPR:ninja      EXPR ? EXPR : EXPR
 EXPR:calc       EXPR OPRATOR EXPR
 EXPR:comp       EXPR COMPARISON EXPR
