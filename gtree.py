@@ -1,3 +1,4 @@
+from anytree import Node, RenderTree
 import gast as AST 
 
 class GrudTree:
@@ -74,18 +75,25 @@ class GrudTree:
                         break
 
                 i += 1
-                        
         return node
 
     def iskeyast( node : AST.ASTKeyPair, key:str ):
         return isinstance( node, AST.ASTKeyPair ) and node.key == key
 
-    def print(tbl : list,level = 0):
-        wpace = "\t" * level 
+    def anytree(tbl,parent=None):
+        if not parent:
+            parent = Node("root")
+        
         for node in tbl:
             if isinstance( node, AST.ASTKeyPair ):
-                print("%s%s"%(wpace,node.key))
-                GrudTree.print(node.children,level+1)
-                pass
+                chp = Node(node.key,parent)
+                GrudTree.anytree(node.children,parent=chp)
             if isinstance( node, AST.ASTVaulePair ):
-                print("%s%s"%(wpace,node.value))
+                Node(node.value,parent=parent)
+
+        return parent
+
+    def print(tbl : list):
+        root = GrudTree.anytree(tbl)
+        for pre, fill, node in RenderTree(root):
+             print("%s%s" % (pre, node.name))
