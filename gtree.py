@@ -1,9 +1,14 @@
+from io import TextIOWrapper
+from typing import List, Tuple
 from anytree import Node, RenderTree
-import gast as AST 
+from gast import AST,ASTVaulePair as ASTVP , ASTKeyPair as ASTKP 
+
+BaseRow = Tuple[ASTKP,List[ASTVP]]
 
 class GrudTree:
     def __init__(self) -> None:
         self.tbl = list()
+        self.curidx = 0
 
     def initorget( self, tbl : list, keys : list , keyall  : str = "" ):
         node = None
@@ -14,18 +19,18 @@ class GrudTree:
         k = str ( keys[ 0 ] )
         for i in range( 0, len(tbl) ):
             gnd = tbl[ i ]
-            if isinstance( gnd, AST.ASTKeyPair ):
+            if isinstance( gnd, ASTKP ):
                 if gnd.key == k:
                     node = gnd
                     break
     
         if not node:
-            node = AST.ASTKeyPair( k )
+            node = ASTKP( k )
             tbl.append( node )
 
         tbl = node.children
 
-        ret : AST.AST = self.initorget( tbl, keys[1:] , keyall )
+        ret : AST = self.initorget( tbl, keys[1:] , keyall )
 
         if ret:
             ret.setparent( node )
@@ -42,8 +47,10 @@ class GrudTree:
         node = self.initorget( self.tbl, keys, key)
         
         if node:
-            val = AST.ASTVaulePair( value )
+            val = ASTVP( value )
             val.setparent( node )
+            val.setbuildidx(self.curidx)
+            self.curidx += 1
             node.children.append( val )
             return True
         
@@ -55,7 +62,7 @@ class GrudTree:
     def get( self, key : str ):
         keys = key.split( ":" )
         
-        node : AST.ASTKeyPair
+        node : ASTKP
         tbl = self.tbl
 
         for k in keys:
@@ -65,7 +72,7 @@ class GrudTree:
                 if len( tbl ) <= i:
                     return None
 
-                node : AST.ASTKeyPair = tbl[ i ]
+                node : ASTKP = tbl[ i ]
                 if GrudTree.iskeyast( node, k ):
                         tbl = node.children
                         break
@@ -73,26 +80,78 @@ class GrudTree:
                 i += 1
         return node
 
-    def iskeyast( node : AST.ASTKeyPair, key:str ):
-        return isinstance( node, AST.ASTKeyPair ) and node.key == key
+    def iskeyast( node : ASTKP, key:str ):
+        return isinstance( node, ASTKP ) and node.key == key
 
     def anytree(tbl,parent=None):
         if not parent:
             parent = Node("root")
         
         for node in tbl:
-            if isinstance( node, AST.ASTKeyPair ):
+            if isinstance( node, ASTKP ):
                 chp = Node(node.key,parent)
                 GrudTree.anytree(node.children,parent=chp)
-            if isinstance( node, AST.ASTVaulePair ):
-                Node(node.value,parent=parent)
+            if isinstance( node, ASTVP ):
+                bidx = node.getbuildidx()
+                name = "(%s) %s" % (bidx,node.value)
+                Node(name,parent=parent)
 
         return parent
 
-    def print(tbl : list,title=None):
+    def print(tbl : list,title=None,f=None):
         if title: 
             title = Node(title) 
 
         root = GrudTree.anytree(tbl,title)
         for pre, fill, node in RenderTree(root):
-             print("%s%s" % (pre, node.name))
+            if f:
+                f : TextIOWrapper = f
+                s = "%s%s" % (pre, node.name)
+                f.write("%s\n" % s.rstrip())
+            else:
+                print("%s%s" % (pre, node.name))
+
+    def dfsvalues(tbl : List[AST]) -> List[ASTVP]:
+        values : List[ASTVP] = []
+        for node in tbl:
+            if isinstance(node,ASTVP):
+                values.append(node)
+                continue
+
+            if isinstance(node,ASTKP):
+                stbl = GrudTree.dfsvalues(node.children)
+                values.extend(stbl)
+
+        return values
+    
+    def tobasebykey(self,key:str) -> BaseRow: 
+        for base in self.tbl:
+            if isinstance(base,ASTKP):
+                if base.key == key:
+                    vals = GrudTree.dfsvalues(base.children)
+                    return (base,vals)
+        return None
+
+    def tobase(g3) -> List[BaseRow]:
+        rows : List[BaseRow] = []
+        
+        for base in g3.tbl:
+            if isinstance(base,ASTKP):
+                vals = GrudTree.dfsvalues(base.children)
+                tup = (base,vals)
+                rows.append(tup)
+
+        return rows
+
+    #babel sort
+    def sortbykey(rows:List[BaseRow]) -> List[BaseRow]:
+        for i in range(0,len(rows)):
+            for j in range(i + 1,len(rows)):
+                lsb = rows[i][0].key.upper()
+                msb = rows[j][0].key.upper()
+                
+                if lsb < msb:
+                    tmp = rows[i]
+                    rows[i] = rows[j]
+                    rows[j] = tmp
+
