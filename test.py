@@ -28,7 +28,11 @@ def test_lexer_linear():
 
         print(tokl)
  
-def test_parser_tree():
+def test_parser_tree(outlog = False):
+    f = None
+    if(outlog):
+        f = open(abspath("./log/gtree"),"w+")
+
     path = abspath("./test/tslang.grud")
     lex = LexerGrud(path)
     parser = ParserGrud(lex)
@@ -36,4 +40,9 @@ def test_parser_tree():
 
     for key in gtree:
         g3 : GrudTree = gtree[key]
-        GrudTree.print(g3.tbl,key)
+        print("[::%s::]" % key)
+        GrudTree.print(g3.tbl,key,f)
+        rows = GrudTree.tobase(g3)
+        GrudTree.sortbykey(rows)
+        for r in rows:
+            print(r[0].key,len(r[1]))
