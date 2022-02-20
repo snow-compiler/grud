@@ -1,4 +1,5 @@
 from posixpath import abspath
+from ggram import Grammar
 from glexer import LexerGrud
 from gtree import GrudTree
 from glexer import LexerGrud
@@ -43,6 +44,20 @@ def test_parser_tree(outlog = False):
         print("[::%s::]" % key)
         GrudTree.print(g3.tbl,key,f)
         rows = GrudTree.tobase(g3)
-        GrudTree.sortbykey(rows)
-        for r in rows:
-            print(r[0].key,len(r[1]))
+        # GrudTree.sortbykey(rows)
+        for key in rows:
+            r = rows.get(key) 
+            if r : 
+                print(r[0].key,len(r[1]))
+
+def test_grammar_initializer():
+    
+    path = abspath("./test/tslang.grud")
+    lex = LexerGrud(path)
+    parser = ParserGrud(lex)
+    tree = parser.parse()
+    lrows = GrudTree.tobase(tree["Grammar"])
+    grows = GrudTree.tobase(tree["Grammar"])
+
+    gram = Grammar(lrows,grows)
+    gram.init()
