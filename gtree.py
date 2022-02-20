@@ -1,9 +1,9 @@
 from io import TextIOWrapper
-from typing import List, Tuple
+from typing import Dict, List
 from anytree import Node, RenderTree
-from gast import AST,ASTVaulePair as ASTVP , ASTKeyPair as ASTKP 
+from gast import AST,ASTVaulePair as ASTVP , ASTKeyPair as ASTKP
+from gtypes import BaseRow, BaseTable 
 
-BaseRow = Tuple[ASTKP,List[ASTVP]]
 
 class GrudTree:
     def __init__(self) -> None:
@@ -132,19 +132,19 @@ class GrudTree:
                     return (base,vals)
         return None
 
-    def tobase(g3) -> List[BaseRow]:
-        rows : List[BaseRow] = []
+    def tobase(g3) -> BaseTable:
+        rows : BaseTable = dict()
         
         for base in g3.tbl:
             if isinstance(base,ASTKP):
                 vals = GrudTree.dfsvalues(base.children)
-                tup = (base,vals)
-                rows.append(tup)
+                rows[base.key] = (base,vals)
 
         return rows
 
     #babel sort
     def sortbykey(rows:List[BaseRow]) -> List[BaseRow]:
+        return
         for i in range(0,len(rows)):
             for j in range(i + 1,len(rows)):
                 lsb = rows[i][0].key.upper()
