@@ -1,0 +1,161 @@
+Lexer
+├── IGNORE
+│   ├── wspace
+│   │   └── (0) ["r'/^(\\n|\\t|\\s|\\f|\\r)$/"]
+│   └── comment
+│       └── (1) ["r'/^[^\\n]*\\n$/"]
+├── EOF
+│   └── (2) ["r'\\0"]
+├── OPRATOR
+│   └── (3) ['*', '/', '%', '+', '-']
+├── COMPARISON
+│   └── (4) ['<=', '==', '>=', '>', '<']
+├── UNARY
+│   └── (5) ["w'not", '+', '-']
+├── LOGICAL
+│   └── (6) ['and', 'or']
+├── TYPE
+│   └── (7) ['numeric', 'array', 'none']
+├── NUMBER
+│   └── (8) ["r'/^[0-9]+$/"]
+└── IDEN
+    └── (9) ["r'/^[a-zA-Z_][a-zA-Z_0-9]*$/"]
+Priority
+└── OPRATOR
+    ├── (0) ['*', '/', '%']
+    └── (1) ['+', '-']
+Grammar
+├── ROOT
+│   └── (0) ['PROC']
+├── PROC
+│   ├── (1) []
+│   └── (2) ['FUNCTION', 'PROC']
+├── FUNCTION
+│   ├── (3) ['fc', 'IDEN', '(', 'FLIST', ')', '->', 'TYPE', ':']
+│   ├── single
+│   │   └── (6) ['FUNCTION:0', 'EXPR']
+│   └── body
+│       └── (7) ['FUNCTION:0', '{', 'BODY', '}']
+├── BODY
+│   ├── (4) []
+│   └── (5) ['STMT', 'BODY']
+├── DEFVAR
+│   ├── declare
+│   │   └── (8) ['IDEN', ':', 'TYPE']
+│   └── init
+│       └── (9) ['IDEN', ':', 'TYPE', '=', 'EXPR']
+├── STMT
+│   ├── expr
+│   │   └── (10) ['EXPR', ';']
+│   ├── var
+│   │   └── (11) ['DEFVAR', ';']
+│   ├── if
+│   │   └── (12) ['if', 'EXPR', ':', 'STMT']
+│   ├── ifnot
+│   │   └── (13) ['if', 'EXPR', ':', 'STMT', 'ifnot', ':', 'STMT']
+│   ├── loop
+│   │   └── (14) ['loop', 'EXPR', ':', 'STMT']
+│   ├── for
+│   │   └── (15) ['for', 'IDEN', ',', 'IDEN', '<-', 'EXPR', ':', 'STMT']
+│   ├── ret
+│   │   └── (16) ['return', 'EXPR', ';']
+│   └── body
+│       └── (17) ['{', 'BODY', '}']
+├── FLIST
+│   ├── (18) []
+│   ├── (19) ['IDEN', ':', 'TYPE']
+│   └── (20) ['IDEN', ':', 'TYPE', ',', 'FLIST']
+├── CLIST
+│   ├── (21) []
+│   ├── (22) ['EXPR']
+│   └── (23) ['EXPR', ',', 'CLIST']
+└── EXPR
+    ├── cell
+    │   └── (24) ['EXPR', '[', 'EXPR', ']']
+    ├── arr
+    │   └── (25) ['[', 'EXPR', ']']
+    ├── ninja
+    │   └── (26) ['EXPR', '?', 'EXPR', ':', 'EXPR']
+    ├── calc
+    │   └── (27) ['EXPR', 'OPRATOR', 'EXPR']
+    ├── comp
+    │   └── (28) ['EXPR', 'COMPARISON', 'EXPR']
+    ├── logic
+    │   └── (29) ['LOGICAL', 'EXPR']
+    ├── unary
+    │   └── (30) ['UNARY', 'EXPR']
+    ├── iden
+    │   └── (31) ['IDEN']
+    ├── ass
+    │   └── (32) ['IDEN', '=', 'EXPR']
+    ├── call
+    │   └── (33) ['IDEN', '(', 'CLIST', ')']
+    └── number
+        └── (34) ['NUMBER']
+AST
+├── PROC
+│   └── 1
+│       └── (0) ['FUNCTION', '^PROC']
+├── FUNCTION
+│   ├── 0
+│   │   └── (1) ['IDEN', 'FLIST', 'TYPE']
+│   ├── single
+│   │   └── (2) ['^FUNCTION:0', 'EXPR']
+│   └── body
+│       └── (3) ['^FUNCTION:0', 'BODY']
+├── BODY
+│   └── 1
+│       └── (4) ['STMT', '^BODY']
+├── DEFVAR
+│   ├── declare
+│   │   └── (5) ['IDEN', 'TYPE']
+│   └── init
+│       └── (6) ['IDEN', 'TYPE', 'EXPR']
+├── FLIST
+│   ├── 1
+│   │   └── (7) ['IDEN', 'IDEN']
+│   └── 2
+│       └── (8) ['IDEN', 'IDEN', '^FLIST']
+├── CLIST
+│   ├── 0
+│   │   └── (9) ['EXPR']
+│   └── 1
+│       └── (10) ['EXPR', '^CLIST']
+├── STMT
+│   ├── expr
+│   │   └── (11) ['EXPR']
+│   ├── var
+│   │   └── (12) ['DEFVAR']
+│   ├── if
+│   │   └── (13) ['EXPR', 'STMT']
+│   ├── ifnot
+│   │   └── (14) ['EXPR', 'STMT', 'STMT']
+│   ├── loop
+│   │   └── (15) ['EXPR', 'STMT']
+│   ├── for
+│   │   └── (16) ['IDEN', 'EXPR', 'STMT']
+│   ├── ret
+│   │   └── (17) ['EXPR']
+│   └── body
+│       └── (18) ['BODY']
+└── EXPR
+    ├── cell
+    │   └── (19) ['EXPR', 'EXPR']
+    ├── ninja
+    │   └── (20) ['EXPR', 'EXPR', 'EXPR']
+    ├── calc
+    │   └── (21) ['EXPR', 'OPRATOR', 'EXPR']
+    ├── comp
+    │   └── (22) ['EXPR', 'COMPARISON', 'EXPR']
+    ├── logic
+    │   └── (23) ['LOGICAL', 'EXPR']
+    ├── unary
+    │   └── (24) ['UNARY', 'EXPR']
+    ├── iden
+    │   └── (25) ['IDEN']
+    ├── ass
+    │   └── (26) ['IDEN', 'EXPR']
+    ├── call
+    │   └── (27) ['IDEN', '^CLIST']
+    └── number
+        └── (28) ['NUMBER']
